@@ -1,7 +1,8 @@
 
 
 
-<img src="https://github.com/pramod-12345/twilio_chat_app_frontend/assets/102239873/32313a72-3999-41da-9e6a-094f5549651d" width="750" height="280">
+<img src="https://github.com/pramod-12345/twilio_chat_app_frontend/assets/102239873/9caa0d06-cc8b-4cd0-87a8-e6b28dbe09d1" width="230" height="230">
+<img src="https://github.com/pramod-12345/twilio_chat_app_frontend/assets/102239873/dc7abcd8-0c61-43b9-844d-4856218c5b47" width="230" height="210">
 
 # React Native Chat App with Twilio
 
