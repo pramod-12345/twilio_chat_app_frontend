@@ -1,4 +1,4 @@
 import axios from 'axios';
 
 export const getToken = (username) => 
-  axios.get(`https://my-node-server-render.onrender.com/gettoken/${username}`).then((twilioUser) => twilioUser.data)
+  axios.get(`https://twilio-backend-fyqm.onrender.com/gettoken/${username}`).then((twilioUser) => twilioUser.data)
