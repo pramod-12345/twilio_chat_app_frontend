@@ -1,28 +1,29 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { GiftedChat } from 'react-native-gifted-chat';
-import { showMessage } from 'react-native-flash-message';
+import React, {useState, useCallback, useEffect, useRef} from 'react';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {GiftedChat} from 'react-native-gifted-chat';
+import {showMessage} from 'react-native-flash-message';
 
-import { colors } from '../theme';
-import { TwilioService } from '../services/twilioService';
-import { ChatLoader } from '../components/ChatSkeletonLoader';
+import {colors} from '../theme';
+import {TwilioService} from '../services/twilioService';
+import {ChatLoader} from '../components/ChatSkeletonLoader';
+import { routes } from '../../App';
 
-export function ChatRoomScreen({ route }) {
-  const { channelId, identity } = route.params;
+export function ChatRoomScreen({route, navigation}) {
+  const {channelId, identity} = route.params;
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const chatClientChannel = useRef();
   const chatMessagesPaginator = useRef();
 
-  const setChannelEvents = useCallback((channel) => {
+  const setChannelEvents = useCallback(channel => {
     chatClientChannel.current = channel;
-    chatClientChannel.current.on('messageAdded', (message) => {
+    chatClientChannel.current.on('messageAdded', message => {
       const newMessage = TwilioService.getInstance().parseMessage(message);
-      const { giftedId } = message.attributes;
+      const {giftedId} = message.attributes;
       if (giftedId) {
-        setMessages((prevMessages) => {
-          if (prevMessages.some(({ _id }) => _id === giftedId)) {
-            return prevMessages.map((m) => (m._id === giftedId ? newMessage : m));
+        setMessages(prevMessages => {
+          if (prevMessages.some(({_id}) => _id === giftedId)) {
+            return prevMessages.map(m => (m._id === giftedId ? newMessage : m));
           }
           return [newMessage, ...prevMessages];
         });
@@ -34,21 +35,23 @@ export function ChatRoomScreen({ route }) {
   useEffect(() => {
     TwilioService.getInstance()
       .getChatClient()
-      .then((client) => client.getChannelBySid(channelId))
-      .then((channel) => setChannelEvents(channel))
-      .then((currentChannel) => currentChannel.getMessages())
-      .then((paginator) => {
+      .then(client => client.getChannelBySid(channelId))
+      .then(channel => setChannelEvents(channel))
+      .then(currentChannel => currentChannel.getMessages())
+      .then(paginator => {
         chatMessagesPaginator.current = paginator;
-        const newMessages = TwilioService.getInstance().parseMessages(paginator.items);
+        const newMessages = TwilioService.getInstance().parseMessages(
+          paginator.items,
+        );
         setMessages(newMessages);
       })
-      .catch((err) => showMessage({ message: err.message, type: 'danger' }))
+      .catch(err => showMessage({message: err.message, type: 'danger'}))
       .finally(() => setLoading(false));
   }, [channelId, setChannelEvents]);
 
   const onSend = useCallback((newMessages = []) => {
-    const attributes = { giftedId: newMessages[0]._id };
-    setMessages((prevMessages) => GiftedChat.append(prevMessages, newMessages));
+    const attributes = {giftedId: newMessages[0]._id};
+    setMessages(prevMessages => GiftedChat.append(prevMessages, newMessages));
     chatClientChannel.current?.sendMessage(newMessages[0].text, attributes);
   }, []);
 
@@ -57,14 +60,19 @@ export function ChatRoomScreen({ route }) {
       {loading ? (
         <ChatLoader />
       ) : (
-        <GiftedChat
-          messagesContainerStyle={styles.messageContainer}
-          messages={messages}
-          renderAvatarOnTop
-          onSend={(messages) => onSend(messages)}
-          user={{ _id: identity }}
-          textInputStyle={{ color: "black" }}
-        />
+        <>
+          <TouchableOpacity style={styles.videoCallButton} onPress={() => navigation.navigate(routes.VideoCall.name)}>
+            <Text style={{color: 'black', padding: 5}}>Start Video Call</Text>
+          </TouchableOpacity>
+          <GiftedChat
+            messagesContainerStyle={styles.messageContainer}
+            messages={messages}
+            renderAvatarOnTop
+            onSend={messages => onSend(messages)}
+            user={{_id: identity}}
+            textInputStyle={{color: 'black'}}
+          />
+        </>
       )}
     </View>
   );
@@ -77,6 +85,15 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     backgroundColor: colors.snow,
-    color: colors.black
+    color: colors.black,
+  },
+  videoCallButton: {
+    backgroundColor: '#77dd77',
+    width: 120,
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    margin: 5,
   },
 });

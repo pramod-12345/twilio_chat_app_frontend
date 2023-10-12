@@ -10,6 +10,7 @@ import { ChatCreateScreen } from './src/screens/CreateChatScreen';
 
 import { colors } from './src/theme';
 import { AppProvider } from './src/app-context';
+import VideoCallScreen from './src/screens/VideoCallScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,10 @@ export const routes = {
   ChatCreat: {
     name: 'chat-create',
     title: 'New Channel',
+  },
+  VideoCall: {
+    name: 'VideoCall',
+    title: 'VideoCall',
   },
 };
 
@@ -68,6 +73,11 @@ export default function App() {
             name={routes.ChatCreat.name}
             options={screenOptions(routes.ChatCreat.title)}
             component={ChatCreateScreen}
+          />
+          <Stack.Screen
+            name={routes.VideoCall.name}
+            options={screenOptions(routes.ChatCreat.title)}
+            component={VideoCallScreen}
           />
         </Stack.Navigator>
         <FlashMessage position="bottom" />

@@ -1,17 +1,31 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, Image } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  StyleSheet,
+  Image,
+} from 'react-native';
 
-import { colors } from '../theme';
-import { routes } from '../../App';
-import { images } from '../assets/map';
+import {colors} from '../theme';
+import {routes} from '../../App';
+import {images} from '../assets/map';
+import {requestCameraPermission} from '../services/global';
 
-export function HomeScreen({ navigation }) {
+export function HomeScreen({navigation}) {
   const [username, setUsername] = useState('');
+
+  // useEffect(() => {
+  //   requestCameraPermission();
+  // }, []);
 
   return (
     <View style={styles.screen}>
       <Image style={styles.logo} source={images.logo} />
-      <Text style={styles.titleText}>The Twilio Chat App</Text>
+      <Text style={styles.titleText}>
+        The Twilio Chat App with {'\n'} Agora Video Call
+      </Text>
       <TextInput
         value={username}
         onChangeText={setUsername}
@@ -22,7 +36,7 @@ export function HomeScreen({ navigation }) {
       <TouchableOpacity
         disabled={!username}
         style={styles.button}
-        onPress={() => navigation.navigate(routes.ChatList.name, { username })}>
+        onPress={() => navigation.navigate(routes.ChatList.name, {username})}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
     </View>
@@ -45,6 +59,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     color: colors.navyBlue,
+    textAlign: 'center',
   },
   input: {
     width: 280,
@@ -56,7 +71,7 @@ const styles = StyleSheet.create({
     borderColor: colors.eclipse,
     marginTop: 32,
     marginBottom: 16,
-    color: 'black'
+    color: 'black',
   },
   button: {
     width: 280,
