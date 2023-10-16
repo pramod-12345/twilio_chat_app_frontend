@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "366338389837",
+    "project_id": "fir-demo-ae385",
+    "storage_bucket": "fir-demo-ae385.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366338389837:android:4ba7a9e45f95603c106904",
+        "android_client_info": {
+          "package_name": "com.twilio_demo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxI5aM-bDuBpbgd93dCDz2wA_ixemoBh8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

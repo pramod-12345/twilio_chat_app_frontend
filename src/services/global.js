@@ -1,6 +1,6 @@
 import {PermissionsAndroid} from 'react-native';
 
-export const app_id = 'yourappid';
+export const app_id = 'df773439f51b47ef9aaed2bc0b9dbaac';
 
 export const requestCameraPermission = async () => {
   try {
