@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import { Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import FlashMessage from 'react-native-flash-message';
@@ -132,47 +133,42 @@ PushNotification.createChannel(
 
 
   useEffect(() => {
-    request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then((result) => {
-    });
+    // 1. Request Android Permissions
+    if (Platform.OS === 'android') {
+      request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS).then((result) => {
+      });
+    }
 
-  }, []);
+    // 2. Setup standard listeners
+    requestUserPermission();
+    notificationListener();
 
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
+    // 3. Setup Firebase Messaging listeners
+    console.log('Message-onReceive-->01');
+    const unsubscribeMessage = messaging().onMessage(async remoteMessage => {
       console.log(" Title ==>> ", remoteMessage.notification?.body);
       console.log(" Title ==>> ", remoteMessage.notification?.title);
+      console.log('Message-onReceive-->001 App jS', remoteMessage);
+      if (Platform.OS === 'ios') {
+        console.log('Test iOS');
+      } else {
+        console.log('Else -->');
+      }
       sendLocalNotitifactionToDevices(remoteMessage.notification?.body);
     });
 
-    return unsubscribe;
-  }, []);
-
-
-  useEffect(() => {
-    notificationsetup()
-    requestUserPermission();
-    notificationListener();
-    return () => { }
-  }, []);
-
-  const notificationsetup = () => {
-    console.log('Message-onReceive-->01');
-    messaging().onMessage((message: RemoteMessage) => {
-      console.log('Message-onReceive-->001 App jS', message);
-      if (Platform.OS == 'ios') {
-        console.log('Test iOS')
-      } else {
-        console.log('Else -->')
-      }
-    });
-
-    //Android & iOS - When Kill App(open from quit/ kill state)
+    // Android & iOS - When Kill App (open from quit/kill state)
     messaging().getInitialNotification().then(remoteMessage => {
       if (remoteMessage) {
         console.log('getInitialNotification', remoteMessage);
       }
     });
-  }
+
+    // 4. Cleanup function
+    return () => {
+      unsubscribeMessage();
+    };
+  }, []);
 
   const sendLocalNotitifactionToDevices = (notification) => {
     var title = 'Test'
